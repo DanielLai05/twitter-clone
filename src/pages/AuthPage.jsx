@@ -1,33 +1,36 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Col, Form, Image, Modal, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import useLocalStorage from 'use-local-storage';
+import { AuthContext } from '../components/AuthProvider';
 
 export default function AuthPage() {
   const loginImage = "https://sig1.co/img-twitter-1";
-  const url = "https://93ba27e4-79ff-4cdd-9ca9-6de543bd0323-00-sh2uy3s2sfg1.pike.replit.dev";
 
   const [modalShow, setModalShow] = useState(null);
   const handleShowSignUp = () => setModalShow("SignUp");
   const handleShowLogin = () => setModalShow("Login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [authToken, setAuthToken] = useLocalStorage("authToken", "");
-
   const navigate = useNavigate();
+  const auth = getAuth();
+  const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
-    if (authToken) {
+    if (currentUser) {
       navigate("/profile");
     }
-  }, [authToken, navigate]);
+  }, [currentUser, navigate]);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${url}/signup`, { username, password });
-      console.log(res.data);
+      const res = await createUserWithEmailAndPassword(
+        auth,
+        username,
+        password
+      )
+      console.log(res.user);
     } catch (error) {
       console.error(error);
     }
@@ -36,11 +39,8 @@ export default function AuthPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${url}/login`, { username, password });
-      if (res.data && res.data.auth === true && res.data.token) {
-        setAuthToken(res.data.token);
-        console.log("Login was successful, token saved")
-      }
+      const res = await signInWithEmailAndPassword(auth, username, password);
+      console.log(res);
     } catch (error) {
       console.error(error);
     }
