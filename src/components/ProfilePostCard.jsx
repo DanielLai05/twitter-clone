@@ -1,51 +1,32 @@
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+
+import { useContext, useState } from "react";
 import { Button, Col, Image, Row } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { AuthContext } from "./AuthProvider";
+import { likePost } from "../features/posts/postsSlice";
 
-export default function ProfilePostCard({ content, postId }) {
-  const [likes, setLikes] = useState([]);
+export default function ProfilePostCard({ post }) {
+  const { content, id: postId } = post
+  const [likes, setLikes] = useState(post.likes || []);
+  const dispatch = useDispatch();
+  const { currentUser } = useContext(AuthContext);
+  const userId = currentUser.uid;
 
-  const token = localStorage.getItem("authToken");
-  const decode = jwtDecode(token);
-  const userId = decode.id;
+  const isLiked = likes.includes(userId);
 
   const pic = "https://pbs.twimg.com/profile_images/1587405892437221376/h167Jlb2_400x400.jpg";
-  const BASE_URL = "https://93ba27e4-79ff-4cdd-9ca9-6de543bd0323-00-sh2uy3s2sfg1.pike.replit.dev";
 
-  useEffect(() => {
-    fetch(`${BASE_URL}/likes/post/${postId}`)
-      .then((response) => response.json())
-      .then((data) => setLikes(data))
-      .catch((error) => console.error("Error:", error));
-  }, [postId]);
-
-
-  const isLiked = likes.some((like) => like.user_id === userId);
 
   const handleLike = () => (isLiked ? removeFromLikes() : addToLikes());
 
   const addToLikes = () => {
-    axios.post(`${BASE_URL}/likes`, {
-      user_id: userId,
-      post_id: postId,
-    })
-      .then((response) => {
-        setLikes([...likes, { ...response.data, likes_id: response.data.id }])
-      })
-      .catch((error) => console.error("Error:", error))
+    setLikes([...likes, userId]);
+    dispatch(likePost({ userId, postId }));
   }
 
   const removeFromLikes = () => {
-    const like = likes.find((like) => like.user_id === userId);
-    if (like) {
-      axios
-        .put(`${BASE_URL}/likes/${userId}/${postId}`)
-        .then(() => {
-          setLikes(likes.filter((likeItem) => likeItem.user_id !== userId));
-        })
-        .catch((error) => console.error("Error:", error));
-    }
+    setLikes(likes.filter((id) => id !== userId));
+    dispatch(removeFromLikes({ userId, postId }));
   }
 
   return (

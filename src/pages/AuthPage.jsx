@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, Col, Form, Image, Modal, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +16,7 @@ export default function AuthPage() {
   const auth = getAuth();
   const { currentUser } = useContext(AuthContext);
 
+
   useEffect(() => {
     if (currentUser) {
       navigate("/profile");
@@ -31,6 +32,15 @@ export default function AuthPage() {
         password
       )
       console.log(res.user);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleSignUpWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider)
     } catch (error) {
       console.error(error);
     }
@@ -61,7 +71,7 @@ export default function AuthPage() {
           <h2 className='my-5' style={{ fontSize: 31 }}>Join Twitter Today.</h2>
 
           <Col sm={5} className='d-grid gap-2'>
-            <Button className='rounded-pill' variant='outline-dark'>
+            <Button className='rounded-pill' variant='outline-dark' onClick={handleSignUpWithGoogle}>
               <i className='bi bi-google'></i> Sign up with Google
             </Button>
             <Button className='rounded-pill' variant='outline-dark'>
