@@ -8,8 +8,8 @@ import { fetchPostsByUser } from "../features/posts/postsSlice";
 
 export default function ProfileMidBody() {
 
-  const url = "https://pbs.twimg.com/profile_banners/83072625/1602845571/1500x500";
-  const pic = "https://pbs.twimg.com/profile_images/1587405892437221376/h167Jlb2_400x400.jpg";
+  const url = "https://firebasestorage.googleapis.com/v0/b/twitter-app-ba819.firebasestorage.app/o/profile-picture%2F2bb789108830735.5fc678bebea13.png?alt=media&token=254d250d-69ec-40bb-9107-6e7f77462280";
+  const pic = "https://firebasestorage.googleapis.com/v0/b/twitter-app-ba819.firebasestorage.app/o/profile-picture%2Fimages.steamusercontent.jpg?alt=media&token=543ca5d1-4c8d-4aaa-9bf5-8c75938b0a1d";
 
   const dispatch = useDispatch();
   const posts = useSelector(store => store.posts.posts);
@@ -45,12 +45,12 @@ export default function ProfileMidBody() {
       </Row>
 
       <p className="mt-5" style={{ margin: 0, fontWeight: "bold", fontSize: "15px" }}>
-        Haris
+        Daniel
       </p>
 
-      <p style={{ marginBottom: "2px" }}>@haris.samingan</p>
+      <p style={{ marginBottom: "2px" }}>@daniel.hehe</p>
 
-      <p>I help people switch careers to be a software developer at sigmaschool.co</p>
+      <p>Software Developer</p>
 
       <p>Entrepreneur</p>
 

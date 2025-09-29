@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { Button, Col, Image, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { AuthContext } from "./AuthProvider";
-import { likePost } from "../features/posts/postsSlice";
+import { deletePost, likePost } from "../features/posts/postsSlice";
 import UpdatePostModal from "./UpdatePostModal";
 
 export default function ProfilePostCard({ post }) {
@@ -15,7 +15,7 @@ export default function ProfilePostCard({ post }) {
 
   const isLiked = likes.includes(userId);
 
-  const pic = "https://pbs.twimg.com/profile_images/1587405892437221376/h167Jlb2_400x400.jpg";
+  const pic = "https://firebasestorage.googleapis.com/v0/b/twitter-app-ba819.firebasestorage.app/o/profile-picture%2Fimages.steamusercontent.jpg?alt=media&token=543ca5d1-4c8d-4aaa-9bf5-8c75938b0a1d";
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const handleShowUpdateModal = () => setShowUpdateModal(true);
@@ -34,6 +34,10 @@ export default function ProfilePostCard({ post }) {
     dispatch(removeFromLikes({ userId, postId }));
   }
 
+  const handleDelete = () => {
+    dispatch(deletePost({ userId, postId }));
+  }
+
   return (
     <Row
       className="p-3"
@@ -47,8 +51,8 @@ export default function ProfilePostCard({ post }) {
       </Col>
 
       <Col>
-        <strong>Haris</strong>
-        <span> @haris.samingan · Apr 16</span>
+        <strong>Daniel</strong>
+        <span> @daniel.hehe · Apr 16</span>
         <p>{content}</p>
         <Image src={imageUrl} style={{ width: 150 }} />
         <div className="d-flex justify-content-between">
@@ -80,7 +84,7 @@ export default function ProfilePostCard({ post }) {
               onClick={handleShowUpdateModal}
             ></i>
           </Button>
-          <Button variant="light">
+          <Button variant="light" onClick={handleDelete}>
             <i className="bi bi-trash"></i>
           </Button>
           <UpdatePostModal
